@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batcave Operations & Progress Terminal</title>
+    <style>
+        :root {
+            --bg-color: #0b0d13;
+            --card-bg: #121620;
+            --border-color: #1e2536;
+            --accent-gold: #f5c518;
+            --bat-blue: #3b82f6;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 16px; max-width: 600px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+        h1 { font-size: 1.25rem; font-weight: 700; color: var(--accent-gold); letter-spacing: 1px; }
+        .subtitle { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+        .card h2 { font-size: 1rem; margin-bottom: 12px; color: var(--bat-blue); display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Tick-based checklists */
+        .check-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; min-height: 44px; }
+        .check-item:last-child { border-bottom: none; }
+        .check-item input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--accent-gold); margin-right: 12px; cursor: pointer; }
+        .check-item label { font-size: 0.95rem; cursor: pointer; flex-grow: 1; user-select: none; }
+        .check-item input[type="checkbox"]:checked + label { text-decoration: line-through; color: var(--text-muted); }
+
+        /* Stats & Verdict */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
+        .stat-box { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
+        .stat-value { font-size: 1.25rem; font-weight: bold; color: var(--accent-gold); }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+        .verdict-banner { padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 0.9rem; margin-top: 10px; }
+        .verdict-saved { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .verdict-chaos { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+        
+        .btn-reset { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn-reset:active { background: rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>🦇 BATCAVE TERMINAL</h1>
+            <div class="subtitle">Stardust Operations & NEET Matrix</div>
+        </div>
+        <div id="date-display" style="font-size: 0.8rem; color: var(--accent-gold);"></div>
+    </header>
+
+    <!-- Daily Performance Verdict -->
+    <div class="card">
+        <h2>Mission Control Status</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" id="completed-count">0/0</div>
+                <div class="stat-label">Tasks Ticked</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="streak-count">1</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+        </div>
+        <div id="verdict-box" class="verdict-banner verdict-chaos">STATUS: GOTHAM IN CHAOS (Get to work)</div>
+    </div>
+
+    <!-- NEET Core Focus Matrix -->
+    <div class="card">
+        <h2>⚡ NEET PCB Daily Focus</h2>
+        <div class="check-item">
+            <input type="checkbox" id="n1" onchange="updateProgress()">
+            <label for="n1">Physics: NLM & Work-Energy-Power Revision</label>
+        </div>
+        <div class="check-item">
+            <input type="checkbox" id="n2" onchange="updateProgress()">
+            <label for="n2">Chemistry: Periodic Table & Bonding Practice</label>
+        </div>
+        <div class="check-item">
+            <input type="checkbox" id="n3" onchange="updateProgress()">
+            <label for="n3">Biology: Photosynthesis & Respiration NCERT Lines</label>
+        </div>
+        <div class="check-item">
+            <input type="checkbox" id="n4" onchange="updateProgress()">
+            <label for="n4">Allen Evening Block (3:15 PM - 6:00 PM Completed)</label>
+        </div>
+    </div>
+
+    <!-- Stardust Industries / Business & Routine -->
+    <div class="card">
+        <h2>💻 Stardust & Operations</h2>
+        <div class="check-item">
+            <input type="checkbox" id="s1" onchange="updateProgress()">
+            <label for="s1">Morning Walk + Audio Routine Done</label>
+        </div>
+        <div class="check-item">
+            <input type="checkbox" id="s2" onchange="updateProgress()">
+            <label for="s2">Business Calls & Client Pipeline Check (18:45)</label>
+        </div>
+        <div class="check-item">
+            <input type="checkbox" id="s3" onchange="updateProgress()">
+            <label for="s3">Code Deployment / Stardust Systems Sprint</label>
+        </div>
+    </div>
+
+    <button class="btn-reset" onclick="resetDay()">Reset Day Ticks</button>
+
+    <script>
+        // Set today's date
+        const options = { weekday: 'short', month: 'short', day: 'numeric' };
+        document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', options);
+
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        
+        // Load saved state from localStorage
+        function loadState() {
+            checkboxes.forEach((cb, index) => {
+                const saved = localStorage.getItem('bat_cb_' + index);
+                if (saved === 'true') cb.checked = true;
+            });
+            updateProgress();
+        }
+
+        // Save state and update UI
+        function updateProgress() {
+            let completed = 0;
+            checkboxes.forEach((cb, index) => {
+                localStorage.setItem('bat_cb_' + index, cb.checked);
+                if (cb.checked) completed++;
+            });
+
+            const total = checkboxes.length;
+            document.getElementById('completed-count').innerText = `${completed}/${total}`;
+
+            const verdictBox = document.getElementById('verdict-box');
+            if (completed === total) {
+                verdictBox.className = "verdict-banner verdict-saved";
+                verdictBox.innerText = "STATUS: GOTHAM DEFENDED (Mission Accomplished 🦇)";
+            } else if (completed >= total / 2) {
+                verdictBox.className = "verdict-banner verdict-saved";
+                verdictBox.innerText = "STATUS: SHADOWS ACTIVE (Keep Pushing)";
+            } else {
+                verdictBox.className = "verdict-banner verdict-chaos";
+                verdictBox.innerText = "STATUS: GOTHAM IN CHAOS (Lock in, Boss!)";
+            }
+        }
+
+        function resetDay() {
+            if(confirm("Reset all ticks for today?")) {
+                checkboxes.forEach((cb, index) => {
+                    cb.checked = false;
+                    localStorage.removeItem('bat_cb_' + index);
+                });
+                updateProgress();
+            }
+        }
+
+        // Initialize on load
+        loadState();
+    </script>
+</body>
+</html>
